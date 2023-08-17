@@ -7,6 +7,14 @@ tuple empty_tuple() asm "NIL";
 (int, int) nextab (int a, int b, int n) inline
   asm "<{ TUCK ADD }>REPEAT";
 
+(tuple) get_fib (int a, int b, int k) inline
+  asm """
+  DUP
+  1 SETGLOB
+  <{ DUP2 ADD }>REPEAT
+  1 GETGLOB
+  TUPLEVAR
+  """;
 ;; (tuple) get_fib (int n, int k) inline
 ;;   asm """
 ;;   1 SETGLOB
@@ -29,19 +37,12 @@ tuple empty_tuple() asm "NIL";
 (tuple) fibonacci_sequence (int n, int k) method_id {
   int a = -1;
   int b = 1;
-  tuple ans = empty_tuple();
   
   if(k == 0) {
-    return ans;
+    return empty_tuple();
   }
 
   (a, b) = nextab(a, b, n);
 
-  repeat(k){
-    b = a + b;
-    a = b - a;
-    ans~tpush(b);
-  }
-
-  return ans;
+  return get_fib(a, b, k);
 }
