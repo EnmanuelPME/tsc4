@@ -10,11 +10,12 @@ tuple empty_tuple() asm "NIL";
 (tuple) get_fib (int a, int b, int k) inline
   asm """
   DUP
-  1 INT ADD
   1 SETGLOB
   <{ DUP2 ADD }>REPEAT
   1 GETGLOB
   TUPLEVAR
+  2 XCHGO
+  2 BLKDROP
   """;
 ;; (tuple) get_fib (int n, int k) inline
 ;;   asm """
@@ -43,7 +44,7 @@ tuple empty_tuple() asm "NIL";
     return empty_tuple();
   }
 
-  (a, b) = nextab(a, b, n + 2);
+  (a, b) = nextab(a, b, n);
 
-  return get_fib(a, b, k - 1);
+  return get_fib(a, b, k);
 }
