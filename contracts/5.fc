@@ -4,7 +4,7 @@ forall X -> tuple tpush(tuple t, X value) asm "TPUSH";
 forall X -> (tuple, ()) ~tpush(tuple t, X value) asm "TPUSH";
 tuple empty_tuple() asm "NIL";
 
-(tuple) get_fibonacci (int n, int k) inline
+(tuple) get_fib (int n, int k) inline
   asm """
   -1 INT 1 INT
   1 SETGLOB
