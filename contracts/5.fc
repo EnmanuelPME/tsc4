@@ -35,7 +35,7 @@ tuple empty_tuple() asm "NIL";
     return ans;
   }
 
-  (a, b) = nextab(a, b);
+  (a, b) = nextab(a, b, n);
 
   repeat(k){
     b = a + b;
