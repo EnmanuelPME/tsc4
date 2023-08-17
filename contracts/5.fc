@@ -1,7 +1,6 @@
 () recv_internal() {
 }
-forall X -> tuple tpush(tuple t, X value) asm "TPUSH";
-forall X -> (tuple, ()) ~tpush(tuple t, X value) asm "TPUSH";
+
 tuple empty_tuple() asm "NIL";
 
 (tuple) get_fib (int n, int k) inline
