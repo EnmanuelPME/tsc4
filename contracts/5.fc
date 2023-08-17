@@ -5,8 +5,9 @@ tuple empty_tuple() asm "NIL";
 
 (tuple) get_fib (int n, int k) inline
   asm """
-  -1 INT 1 INT
   1 SETGLOB
+  -1 INT 1 INT
+  s2 PUSH
   <{
   TUCK ADD
   }>REPEAT
@@ -16,6 +17,8 @@ tuple empty_tuple() asm "NIL";
   }>REPEAT
   1 GETGLOB
   TUPLEVAR
+  SWAP
+  DROP
   """;
 
 
