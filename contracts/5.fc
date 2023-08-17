@@ -4,47 +4,25 @@ forall X -> tuple tpush(tuple t, X value) asm "TPUSH";
 forall X -> (tuple, ()) ~tpush(tuple t, X value) asm "TPUSH";
 tuple empty_tuple() asm "NIL";
 
-(int, int) nextab (int a, int b, int n) inline
-  asm "<{ TUCK ADD }>REPEAT";
-
-(tuple) get_fib (int a, int b, int k) inline
+(tuple) get_fib (int n, int k) inline
   asm """
-  DUP
   1 SETGLOB
+  1 INT -1 INT
+  s2 XCHG0
+  <{ TUCK ADD }>REPEAT;
+  1 GETGLOB
   <{ DUP2 ADD }>REPEAT
   1 GETGLOB
   TUPLEVAR
   s2 XCHG0
   2 BLKDROP
   """;
-;; (tuple) get_fib (int n, int k) inline
-;;   asm """
-;;   1 SETGLOB
-;;   -1 INT 1 INT
-;;   s2 PUSH
-;;   <{
-;;   TUCK ADD
-;;   }>REPEAT
-;;   1 GETGLOB
-;;   <{
-;;   DUP2 ADD
-;;   }>REPEAT
-;;   1 GETGLOB
-;;   TUPLEVAR
-;;   SWAP
-;;   DROP
-;;   """;
 
 ;; testable
 (tuple) fibonacci_sequence (int n, int k) method_id {
-  int a = -1;
-  int b = 1;
-  
   if(k == 0) {
     return empty_tuple();
   }
 
-  (a, b) = nextab(a, b, n);
-
-  return get_fib(a, b, k);
+  return get_fib(n, k);
 }
