@@ -14,7 +14,7 @@ tuple empty_tuple() asm "NIL";
   <{ DUP2 ADD }>REPEAT
   1 GETGLOB
   TUPLEVAR
-  2 XCHG0
+  s2 XCHG0
   2 BLKDROP
   """;
 ;; (tuple) get_fib (int n, int k) inline
