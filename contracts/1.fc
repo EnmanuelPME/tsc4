@@ -16,7 +16,7 @@ forall X -> int empty (X x) inline asm "ISNULL";
         }
         slice sc = tree.begin_parse();
         repeat (sc.slice_refs()) {
-            pila~pb(s~load_ref());
+            pila~pb(sc~load_ref());
         }
     }
     return begin_cell().end_cell();
