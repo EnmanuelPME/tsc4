@@ -3,48 +3,48 @@
   Write the method that multiplies one matrix by another.
   The 1st and 2nd parameter of the function will contain
   a matrix implemented using tuples (eg: [[1,2], [3,4]]).
-  Matrices can be of different sizes, ranging from 4x4
+  Matrices can be of different lgns, ranging from 4x4
   up to 32x32.
-  Matrix can be rectangular where matrixA must to be of size n*m & matrixB of size m*p.
+  Matrix can be rectangular where mA must to be of lgn n*m & mB of lgn m*p.
   After calculating the result matrix, the function should return final result (as tuple).
 -}
 
-int size(tuple t) asm "TLEN";
-tuple empty_tuple() asm "NIL";
-forall X -> tuple tpush(tuple t, X value) asm "TPUSH";
-forall X -> (tuple, ()) ~tpush(tuple t, X value) asm "TPUSH";
+int lgn(tuple t) asm "TLEN";
+tuple emptytuple() asm "NIL";
+forall X -> tuple push(tuple t, X value) asm "TPUSH";
+forall X -> (tuple, ()) ~push(tuple t, X value) asm "TPUSH";
 
 () recv_internal() {
 }
 
 ;; testable
-(tuple) matrix_multiplier(tuple matrixA, tuple matrixB) method_id {
+(tuple) matrix_multiplier(tuple mA, tuple mB) method_id {
+ 
+  tuple answer = emptytuple();
+  int m = mA.at(0).lgn();
+  int p = mB.at(0).lgn();
+  int n = mA.lgn();
   
+  int k = 0;
   int i = 0;
   int j = 0;
-  int k = 0;
-  int n = matrixA.size();
-  int m = matrixA.at(0).size();
-  int p = matrixB.at(0).size();
-  tuple sol = empty_tuple();
-
   while(i < n) {
     j = 0;
-    tuple solx = empty_tuple();
-    tuple tempa = matrixA.at(i);
+    tuple tempa = mA.at(i);
+    tuple answerx = emptytuple();
     while(j < p) {
-      int x = 0 ;
       k = 0;
+      int aux = 0 ;
       while(k < m) {
-        x = x + ( tempa.at(k) * matrixB.at(k).at(j) ) ;
+        aux = aux + ( tempa.at(k) * mB.at(k).at(j) ) ;
         k = k + 1;
       }
       j = j + 1 ;
-      solx~tpush( x );
+      answerx~push( aux );
     }
     i = i + 1 ;
-    sol~tpush( solx );
+    answer~push( answerx );
   }
 
-  return sol;
+  return answer;
 }
