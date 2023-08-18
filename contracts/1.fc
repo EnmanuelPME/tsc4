@@ -10,7 +10,7 @@ forall X -> (tuple, ()) pb (tuple tail, X head) inline asm "CONS";
   tuple pila = null();
   pila~pb(c);
   while ( -1 ) {
-    cell c = stack~popb();
+    cell c = pila~popb();
     if(c.cell_hash() == hash){ return c; }
     slice nxnode = c.begin_parse();
     repeat (nxnode.slice_refs()) {
