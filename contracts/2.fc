@@ -9,11 +9,42 @@
   After calculating the result matrix, the function should return final result (as tuple).
 -}
 
+int size(tuple t) asm "TLEN";
+tuple empty_tuple() asm "NIL";
+forall X -> tuple tpush(tuple t, X value) asm "TPUSH";
+forall X -> (tuple, ()) ~tpush(tuple t, X value) asm "TPUSH";
+
 () recv_internal() {
 }
 
 ;; testable
 (tuple) matrix_multiplier(tuple matrixA, tuple matrixB) method_id {
-  return null();
-}
+  
+  int i = 0;
+  int j = 0;
+  int k = 0;
+  int n = matrixA.size();
+  int m = matrixA.at(0).size();
+  int p = matrixB.at(0).size();
+  tuple sol = empty_tuple();
 
+  while(i < n) {
+    j = 0;
+    tuple solx = empty_tuple();
+    tuple tempa = matrixA.at(i);
+    while(j < p) {
+      int x = 0 ;
+      k = 0;
+      while(k < m) {
+        x = x + ( tempa.at(k) * matrixB.at(k).at(j) ) ;
+        k = k + 1;
+      }
+      j = j + 1 ;
+      solx~tpush( x );
+    }
+    i = i + 1 ;
+    sol~tpush( solx );
+  }
+
+  return sol;
+}

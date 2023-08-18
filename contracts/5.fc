@@ -1,6 +1,5 @@
 () recv_internal() {
 }
-
 tuple empty_tuple() asm "NIL";
 
 (tuple) get_fib (int n, int k) inline
@@ -8,7 +7,7 @@ tuple empty_tuple() asm "NIL";
   1 SETGLOB
   1 INT -1 INT
   s2 XCHG0
-  <{ TUCK ADD }>REPEAT
+  <{ TUCK ADD }>REPEAT;
   1 GETGLOB
   <{ DUP2 ADD }>REPEAT
   1 GETGLOB
