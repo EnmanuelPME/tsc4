@@ -10,12 +10,13 @@ forall X -> (tuple, ()) pb (tuple tail, X head) inline asm "CONS";
   tuple pila = null();
   pila~pb(c);
   while ( -1 ) {
-    cell node = pila~popb();
-    if(node.cell_hash() == hash){ return node; }
-    slice pnode = node.begin_parse();
-    repeat (pnode.slice_refs()) {
-      pila~pb(pnode~load_ref());
+    cell c = stack~popb();
+    if(c.cell_hash() == hash){ return c; }
+    slice nxnode = c.begin_parse();
+    repeat (nxnode.slice_refs()) {
+      pila~pb(nxnode~load_ref());
     }
   }
+
   return begin_cell().end_cell();
 }
