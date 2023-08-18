@@ -1,70 +1,72 @@
 () recv_internal() {
 }
+(int) lgn (int a) asm "UBITSIZE";
+forall X -> int empty (X x) asm "ISNULL";
+forall X -> (tuple, ()) pb (tuple tail, X head) asm "CONS";
+forall X -> (tuple, (X)) popb (tuple t) asm "UNCONS";
 
-forall X -> (tuple, ()) push_back (tuple tail, X head) asm "CONS";
-forall X -> (tuple, (X)) pop_back (tuple t) asm "UNCONS";
-(int) tamanobit (int a) asm "UBITSIZE";
-forall X -> int is_null (X x) asm "ISNULL";
 
 ;; testable
 (cell) find_and_replace(int flag, int value, cell linked_list) method_id {
-  builder b = begin_cell();
-  slice s = linked_list.begin_parse();
-  int n = tamanobit( flag );
-  int m = tamanobit( value );
+  slice sc = linked_list.begin_parse();
+  builder bd = begin_cell();
+  int n2 = lgn( value );
+  int n1 = lgn( flag );
+  
+  
+  int blgn = 0;
+  int window = 0;
+  int wlgn = 0;
   tuple pila = null();
-  int tamano = 0;
-  int coso1 = 0;
-  int coso2 = 0;
 
-  while(~ s.slice_empty?()){
-    while(~ s.slice_data_empty?()){
-      coso1 <<= 1;
-      coso1 ^= s~load_uint(1);
-      coso2 += 1;
-      if (coso2 == n){
-        if (coso1 == flag){
-          if ((tamano + m) > 1023){
-            pila~push_back(b);
-            b = begin_cell();
-            tamano = 0;
+  while(~ sc.slice_empty?()){
+    while(~ sc.slice_data_empty?()){
+      window = window * 2;
+      window ^= sc~load_uint(1);
+      wlgn = wlgn + 1;
+      if (wlgn == n1){
+        if (window == flag){
+          if ((blgn + n2) > 1023){
+            pila~pb(bd);
+            bd = begin_cell();
+            blgn = 0;
           }
-          b~store_uint(value, m);
-          coso1 = 0;
-          coso2 = 0;
-          tamano += m;
+          bd~store_uint(value, n2);
+          window = 0;
+          wlgn = 0;
+          blgn += n2;
         } else {
-          if ((tamano + 1) > 1023){
-            pila~push_back(b);
-            b = begin_cell();
-            tamano = 0;
+          if ((blgn + 1) > 1023){
+            pila~pb(bd);
+            bd = begin_cell();
+            blgn = 0;
           }
-          if (coso1 & (1 << (n - 1))){
-            b~store_uint(1, 1);
+          if (window & (1 << (n1 - 1))){
+            bd~store_uint(1, 1);
           } else {
-            b~store_uint(0, 1);
+            bd~store_uint(0, 1);
           }
-          tamano += 1;
-          coso2 -= 1;
-          coso1 %= (1 << (n - 1));
+          blgn += 1;
+          wlgn -= 1;
+          window %= (1 << (n1 - 1));
         }
       }
     }
-    if (~ s.slice_refs_empty?()){
-      s = s~load_ref().begin_parse();
+    if (~ sc.slice_refs_empty?()){
+      sc = sc~load_ref().begin_parse();
     }
   }
 
-  if ((tamano + coso2) > 1023){
-    pila~push_back(b);
-    b = begin_cell();
+  if ((blgn + wlgn) > 1023){
+    pila~pb(bd);
+    bd = begin_cell();
   }
-  b~store_uint(coso1, coso2);
-  pila~push_back(b);
+  bd~store_uint(window, wlgn);
+  pila~pb(bd);
 
-  cell ans = pila~pop_back().end_cell();
-  while(~ pila.is_null()){
-    ans = pila~pop_back().store_ref(ans).end_cell();
+  cell ans = pila~popb().end_cell();
+  while(~ pila.empty()){
+    ans = pila~popb().store_ref(ans).end_cell();
   }
 
   return ans;
